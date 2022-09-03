@@ -1,5 +1,7 @@
 import express, {Request, Response} from 'express';
 import { body, validationResult } from 'express-validator';
+import { DatabaseConnectionError } from '../errors/database-connection-error';
+import { RequestValidationError } from '../errors/request-validation-error';
 
 const router = express.Router();
 
@@ -15,12 +17,13 @@ router.post('/api/users/signup', [
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
-        res.status(400).send(errors.array());
+        throw new Error('Email or password invalid');
     }
 
     const { email, password } = req.body;
 
     console.log('.........creating user');
+    throw new Error('Error connecting to database');
 
     res.send({});
 });
