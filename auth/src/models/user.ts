@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {Password} from "../services/password";
 
 // For attributes
 interface UserAttrs{
@@ -15,7 +16,6 @@ interface UserDoc extends mongoose.Document{
     password: string
 }
 
-
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -25,6 +25,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+});
+
+// Hashed password before save
+userSchema.pre('save', async function(done){
+    if(this.isModified('password')){
+        const hashed = await Password.toHash(this.get('password'));
+        this.set('password', hashed);
+    }
+    done();
 });
 
 // Just for typescript check
